@@ -1,215 +1,134 @@
-# 회원가입
+# 검색기능
 
-## 회원가입
+여러가지 방법으로 검색기능을 구현할 수 있습니다. 
 
-### 라우저 설정
+음 이번에는 Link 와 Push를 통한 두가지 방식을 알아볼 것입니다. 
 
-우선 `POST /user/`   을 통해 요청을 받기 때문에 user.js라우터에서 요청을 처리해 줄것입니다. 
+각각 다른 상황에 맞게 사용할 수 있겠죠? 
 
-```javascript
-const express = require("express");
+* push는 검색창과 같이 실행시키면 함수안에서 router가 설정 경로로 이동시켜줍니다. 
+* link는 a태그와 같습니다. 
 
-const router = express.Router();
+## Router.push
 
-// 'POST /user/' 를 통해 요청을 받을 경우 라우터
-router.post("/", (req, res, next) => { //next는 미들웨어 작업
-  
-});
-
-module.exports = router;
-```
-
-이제 저 안에다가 작성을 해볼까요? 
-
-먼저 비동기 작업이기 떄문에 무조건 에러처리를 해줘야 합니다 . 
-
-### 순서
-
-try-catch문을 사용한뒤 , 순서는 다음과 같습니다. 
-
-1. 요청받은 email 과 DB에 저장된email이 중복되는지 체크
-2.  중복값이 없다면 에러코드와 같이 메세지를 날려준다.
-3. 중복값이 없다면, bcrypt를 통해 받은 비밀번호를 암호화\(해쉬화\)
-4. 비동기 작업으로 User모델에 담아준다.
-5. 작업이 완료되면, 201상태와 함께 성공메세지를 보내고,
-6. 작업중간 에러가 발생하면 catch문에서 error처리
-
-이제 시작해 볼까요? 
-
-### 1.요청받은 email 과 DB에 저장된email이 중복되는지 체크
+레이아웃 안에는 다음과 같은 검색창이 있습니다. 
 
 ```javascript
-const express = require("express");
-//User모델을 불러온뒤
-const { User } = require("../models");
-
-const router = express.Router();
-
-// 'POST /user/' 를 통해 요청을 받을 경우 라우터
-router.post("/", (req, res) => {
-  try {
-    //1.중복체크
-    const exUser = await User.findOne({
-        where:{//where은 조건
-            email:req.body.email, //같은 email이 있는지
-        }
-    })
-  } catch (e) {
-      
-  }
-});
-
-module.exports = router;
+ const [searchInput, onChangeSearchInput] = useInput("");
+  <Menu.Item>
+          <SearchInput
+            enterButton
+            style={{ verticalAlign: "middle" }}
+            value={searchInput}
+            onChange={onChangeSearchInput}
+            onSearch={onSearch} //검색을 하는 함수
+          ></SearchInput>
+</Menu.Item>
 ```
 
-### 2.중복값이 없다면 에러코드와 같이 메세지를 날려준다.
-
-위에서 중복값이 있다면 exUser가 true가 되었겠죠?
+자, 그렇다면 onSearch를 호출하면 안에서 해당 경로로 이동을 시켜주면 되겠죠? 
 
 ```javascript
-const express = require("express");
-const { User } = require("../models");
-
-const router = express.Router();
-
-router.post("/", (req, res) => {
-  try {
-    const exUser = await User.findOne({
-        where:{
-            email:req.body.email,
-        }
-    })
-    //2.중복된 아이디가 있다면 에러보내주기
-    if(exUser){
-        res.status(403).send("이미 사용중인 이메일입니다.")
-    }
-  } catch (e) {
-      
-  }
-});
-
-module.exports = router;
-
+ import Router from "next/router";
+ 
+   const onSearch = useCallback(() => {
+    Router.push(`/hashtag/${searchInput}`);
+  }, [searchInput]);
 ```
 
-### 3.중복값이 없다면, bcrypt를 통해 받은 비밀번호를 암호화\(해쉬화\)
+이렇게 되면 예를들어 리액트를 입력한다고 하면,
 
-bcrypt를 설치해주세요
+ `hashtag/리액트` 이런 경로로 이동이 되겠죠?
+
+자 전에 동적라우팅을 통해 만든 hashtag/\[tag\].js 기억나시나요? 그렇습니다. 이렇게하면  검색기능이 구현이 완료되었습니다!
 
 ```javascript
-const express = require("express");
-const { User } = require("../models");
-const bcrypt = require('bcrypt')
+import React, { useCallback } from "react";
+import Link from "next/link";
+import { Menu, Input, Row, Col } from "antd";
+import LoginForm from "./loginForm";
+import styled from "styled-components";
+import UserProfile from "./UserProfile";
+import { useSelector } from "react-redux";
+import useInput from "../hooks/useInput";
+import Router from "next/router";
 
-const router = express.Router();
+const SearchInput = styled(Input.Search)`
+  vertical-align: center;
+`;
+export default function AppLayout({ children }) {
+  const { me } = useSelector((state) => state.user);
+  const [searchInput, onChangeSearchInput] = useInput("");
 
-router.post("/", (req, res) => {
-  try {
-    const exUser = await User.findOne({
-        where:{
-            email:req.body.email,
-        }
-    })
-    if(exUser){
-        res.status(403).send("이미 사용중인 이메일입니다.")
-    }
-    //2.중복된 아이디가 없다면 받은 비밀번호 문자열 해쉬화
-    const hashedPwd = await bcrypt.hash(req.body.password, 11)
-  } catch (e) {
-      
-  }
-});
+  const onSearch = useCallback(() => {
+    Router.push(`/hashtag/${searchInput}`);
+  }, [searchInput]);
 
-module.exports = router;
+  return (
+    <>
+      <Menu mode="horizontal">
+.
+.
+.
+        <Menu.Item>
+          <SearchInput
+            enterButton
+            style={{ verticalAlign: "middle" }}
+            value={searchInput}
+            onChange={onChangeSearchInput}
+            onSearch={onSearch}
+          ></SearchInput>
+        </Menu.Item>
+      </Menu>
+      <Row gutter={8}>
+        <Col xs={24} md={6}>
+          {me ? <UserProfile /> : <LoginForm />}
+        </Col>
+        <Col xs={24} md={12}>
+          {children}
+        </Col>
+        <Col xs={24} md={6}>
+          <a
+            href="https://ant.design/components/grid/"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            made by Conrad
+          </a>
+        </Col>
+      </Row>
+    </>
+  );
+}
 ```
 
-bcrypt.hash\( \)의 첫번째 인자는 변경할 비밀번호, 두번째 인자는 얼마나 강하게 할것인지를 말하는데,
+## Link 
 
-두번째 인자에는 보통 10~13사이의 값을 담아줍니다. 서버 컴퓨터의 성능에 따라 값이 높아지면 처리시간이 길어질 수 있습니다. 
+자 이번에는 next에 내장되어있는 link를 통해 검색? 기능을 구현해보겠습니다. 
 
-### 4.비동기 작업으로 User모델에 담아준다.
+게시글에 있는 아바타를 누르게 되면 해당 사람의 유저정보, 게시글을 볼 수 있도록 만들어보겠습니다. 
+
+아 이번에는 저번시간에 만들어놓은 pages/user/\[id\].js 동적 라우팅페이지를 활용하면 되겠죠? 
+
+기본적인 Link사용법은 이미 컴포넌트를 구성할때 알아보았으니 바로 사용해보도록 하지요. 
 
 ```javascript
-const express = require("express");
-const { User } = require("../models");
-const bcrypt = require('bcrypt')
-
-const router = express.Router();
-
-router.post("/", (req, res) => {
-  try {
-    const exUser = await User.findOne({
-        where:{
-            email:req.body.email,
-        },
-    });
-    if(exUser){
-        res.status(403).send("이미 사용중인 이메일입니다.")
-    }
-    const hashedPwd = await bcrypt.hash(req.body.password, 11);
-    //3.User모델에 담아주기
-    await User.create({
-        email:req.body.email,
-        nickname: req.body.nickname,
-        password: hashedPwd
-    });
-  } catch (e) {
-      
-  }
-});
-
-module.exports = router;
-
+<Card.Meta
+      avatar={
+             <Link href={`/user/${post.Retweet.User.id}`}>
+                <a>
+                   <Avatar>{post.Retweet.User.nickname[0]}</Avatar>
+                </a>
+             </Link>
+             }
+   title={post.Retweet.User.nickname}
+   description={<PostCardContent postData={post.Retweet.content} />}
+/>
 ```
 
-### 
+ ```/user/${post.Retweet.User.id}```  라는 링크를 만들어 주었는데 이는 곧 선택한 유저아이디가 4라면,
 
-### 5.작업이 완료되면, 201상태와 함께 성공메세지를 보내고,
+`localhost:3000/user/4` 라는 페이지로 이동되고, 이 페이지는 동적라우팅페이지로 만들어져 있죠? 
 
-### 6.작업중간 에러가 발생하면 catch문에서 error처리
-
-```javascript
-const express = require("express");
-const { User } = require("../models");
-const bcrypt = require('bcrypt')
-
-const router = express.Router();
-
-router.post("/", (req, res) => {
-  try {
-    const exUser = await User.findOne({
-        where:{
-            email:req.body.email,
-        }
-    })
-    if(exUser){
-        res.status(403).send("이미 사용중인 이메일입니다.")
-    }
-    const hashedPwd = await bcrypt.hash(req.body.password, 11);
-    await User.create({
-        email:req.body.email,
-        nickname: req.body.nickname,
-        password: hashedPwd
-    });
-    res.status(201).send('회원가입성공'); //201 - 잘생성됨
-  } catch (e) {
-      console.error(e);
-      next(e);  //next를 통해 다음 미들웨어로 보내준다.
-  }
-});
-
-module.exports = router;
-```
-
-생각보다 간단하죠? 
-
-지금까지 회원가입 구현이었습니다.
-
-### 
-
-### 
-
-### 
-
-
+그렇다면 그 페이지에서 SSR을 통해 데이터를 가져오는 방식입니다. 
 
