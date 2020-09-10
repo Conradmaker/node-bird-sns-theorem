@@ -6,7 +6,7 @@
 
 아래 npm-trends를 한번 볼까요?
 
-![](.gitbook/assets/image%20%2814%29.png)
+![](../.gitbook/assets/image%20%2814%29.png)
 
 아직까지는 moment가 사용량이 많기는 하지만, dayjs도 꾸준히 증가하는 중입니다. 
 

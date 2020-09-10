@@ -41,7 +41,7 @@ export default index;
 
 HYDRATE는 위에서 작성한 내용이 실행되면 결과를 받아 payload안에 넣어줍니다. 
 
-![&#xC5EC;&#xAE30;&#xC11C; payload&#xC548;&#xC5D0; &#xBC1B;&#xC544;&#xC9C4;&#xB2E4;.](.gitbook/assets/image%20%2813%29.png)
+![&#xC5EC;&#xAE30;&#xC11C; payload&#xC548;&#xC5D0; &#xBC1B;&#xC544;&#xC9C4;&#xB2E4;.](../.gitbook/assets/image%20%2813%29.png)
 
 하지만, 지금도 정보가 안들어 있다고, state들이 한번더 감싸져 있습니다. 
 

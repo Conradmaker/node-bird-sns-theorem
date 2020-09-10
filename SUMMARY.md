@@ -39,16 +39,14 @@
 
 ## 서버사이드 렌더링 <a id="undefined-15"></a>
 
----
-
-* [들어가면서](undefined-17.md)
-* [준비](undefined-16.md)
-* [SSR 쿠키공유](untitled.md)
-* [다이나믹 라우터](untitled-1.md)
-* [CSS 서버사이드 렌더링](css.md)
-* [Hashtag 게시글 불러오기](hashtag.md)
-* [swr](swr.md)
-* [검색기능](undefined-1.md)
-* [dayjs](dayjs.md)
-* [빌드](undefined.md)
+* [들어가면서](undefined-15/undefined-17.md)
+* [준비](undefined-15/undefined-16.md)
+* [SSR 쿠키공유](undefined-15/untitled.md)
+* [다이나믹 라우터](undefined-15/untitled-1.md)
+* [CSS 서버사이드 렌더링](undefined-15/css.md)
+* [Hashtag 게시글 불러오기](undefined-15/hashtag.md)
+* [swr](undefined-15/swr.md)
+* [검색기능](undefined-15/undefined-1.md)
+* [dayjs](undefined-15/dayjs.md)
+* [빌드](undefined-15/undefined.md)
 
