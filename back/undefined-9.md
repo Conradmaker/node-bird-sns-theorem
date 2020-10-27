@@ -8,6 +8,8 @@
 
 Sequelize에서 관계를 설정하면 자동으로 add, get, remove같은 메소드들이 생성되는데 다음과 같습니다. 
 
+참고로 as를 이용해 별칭을 안정해주면 그냥 태이블명 addUser 이렇게 생성이 되요.
+
 ```javascript
   Post.associate = (db) => {
     //belongsTo는 UserId칼럼을 만들어줘서 참조관계를 만들어준다.
