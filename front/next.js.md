@@ -67,7 +67,7 @@ export default function signup() {
 {% endtab %}
 {% endtabs %}
 
-개발 서버를 다시 켜보면 파일명과 매칭되어서 react-router의 기능을 그대로 사용할 수 있습니다.
+개발 서버ti를 다시 켜보면 파일명과 매칭되어서 react-router의 기능을 그대로 사용할 수 있습니다.
 
 * index.js : [http://localhost:3000/](http://localhost:3000/)
 * profile.js: [http://localhost:3000/](http://localhost:3000/)profile/
